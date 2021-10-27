@@ -1,16 +1,68 @@
-// const { Router } = require("express");
-// const { Tutorial } = require("../models/tutorial");
-// const validateSession = require("../middleware/validate-session");
+let express = require("express");
+const { Tutorial } = require("../models");
+let router = express.Router();
+const validateSession = require("../middleware/validate-session");
 
 // const router = Router();
 
-// /***VIEW A TUTORIAL (ALL the tutorials in the database)***/
-// router.get("/tutorial", (req, res) => {
-//     // Tutorial.FindAll({})
-// }
+/***GET: VIEW A TUTORIAL (ALL the tutorials in the database) - UPDATE To validatesession***/
+router.get("/", function (req, res) {
+  Tutorial.findAll()
+    .then((post) => res.status(200).json(post))
+    .catch((err) => res.status(500).json({ error: err }));
+});
 
-// /***CREATE A TUTORIAL***/
+// /***POST: CREATE A TUTORIAL***/
 
-// /***EDIT A TUTORIAL***/
+router.post("/create", validateSession, (req, res) => {
+  const tutEntry = {
+    title: req.body.tutorial.title,
+    userId: req.user.id,
+    date: req.body.tutorial.date,
+    photo_url: req.body.tutorial.photo_url,
+    description: req.body.tutorial.description,
+    estimatedTime: req.body.tutorial.estimatedTime,
+    tools: req.body.tutorial.tools,
+    directions: req.body.tutorial.directions,
+  };
+  Tutorial.create(tutEntry)
+    .then((entry) => res.status(200).json(entry))
+    .catch((err) => res.status(500).json({ error: err }));
+});
+// /***PUT: EDIT A TUTORIAL***/
+router.put("/update/:id", validateSession, function (req, res) {
+  const updateTutEntry = {
+    title: req.body.tutorial.title,
+    date: req.body.tutorial.date,
+    photo_url: req.body.tutorial.photo_url,
+    description: req.body.tutorial.description,
+    estimatedTime: req.body.tutorial.estimatedTime,
+    tools: req.body.tutorial.tools,
+    directions: req.body.tutorial.directions,
+  };
+  const query = { where: { id: req.params.id, userId: req.user.id } };
 
-// /***DELETE A TUTORIAL (User-specific or Admin-all)***/
+  Tutorial.update(updateTutEntry, query)
+    .then((entries) => res.status(200).json(entries))
+    .catch((err) => res.status(500).json({ error: err }));
+});
+
+/***DELETE: DELETE A TUTORIAL (User-specific or Admin-all)***/
+router.delete("/delete/:id", validateSession, function (req, res) {
+  let query;
+  if (req.user.role == "admin") {
+    query = { where: { id: req.params.id } };
+  } else {
+    query = { where: { id: req.params.id, userId: req.user.id } };
+  }
+  Tutorial.destroy(query)
+    .then((entry) => {
+      if (entry !== 0) {
+        res.status(200).json({ message: "Tutorial removed" });
+      } else {
+        res.status(200).json({ message: "No tutorial found" });
+      }
+    })
+    .catch((err) => res.status(500).json({ error: err }));
+});
+module.exports = router;

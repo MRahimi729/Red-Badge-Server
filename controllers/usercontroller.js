@@ -1,15 +1,15 @@
 let express = require("express");
-const { User } = require("../models/user");
+const { User } = require("../models");
 let router = express.Router();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 // const { Router } = require("express");
 
-//const validateSession = require("../middleware/validate-session");
+const validateSession = require("../middleware/validate-session");
 
 // const router = Router();
-/*GET USERS ENDPOINT */
+/*GET USERS ENDPOINT --NEED TO ADD ADMIN, VALIDATE SESSION here */
 router.get("/", function (req, res) {
   User.findAll()
     .then((post) => res.status(200).json(post))
@@ -23,6 +23,7 @@ router.post("/signup", function (req, res) {
     lastName: req.body.user.lastName,
     email: req.body.user.email,
     password: bcrypt.hashSync(req.body.user.password, 13),
+    role: req.body.user.role,
   })
     .then(function createSuccess(user) {
       let token = jwt.sign(
@@ -82,4 +83,21 @@ router.post("/signin", function (req, res) {
 });
 
 /***DELETE USER (ADMIN)***/
+router.delete("/delete/:id", validateSession, function (req, res) {
+  let query;
+  if (req.user.role == "admin") {
+    query = { where: { id: req.params.id } };
+  } else {
+    query = { where: { id: req.params.id, userId: req.user.id } };
+  }
+  User.destroy(query)
+    .then((entry) => {
+      if (entry !== 0) {
+        res.status(200).json({ message: "User removed" });
+      } else {
+        res.status(200).json({ message: "No user found" });
+      }
+    })
+    .catch((err) => res.status(500).json({ error: err }));
+});
 module.exports = router;
