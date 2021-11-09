@@ -4,6 +4,8 @@ let router = express.Router();
 const validateSession = require("../middleware/validate-session");
 
 // const router = Router();
+//FIND ALL
+// const query = { where: { id: req.user.id } };
 
 /***GET: VIEW A TUTORIAL (ALL the tutorials in the database) - UPDATE To validatesession***/
 router.get("/", function (req, res) {
@@ -24,6 +26,7 @@ router.post("/create", validateSession, (req, res) => {
     estimatedTime: req.body.tutorial.estimatedTime,
     tools: req.body.tutorial.tools,
     directions: req.body.tutorial.directions,
+    ownerId: req.user.id,
   };
   Tutorial.create(tutEntry)
     .then((entry) => res.status(200).json(entry))

@@ -8,7 +8,7 @@ const Tutorial = db.define("tutorial", {
   },
   date: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   photo_url: {
     type: DataTypes.TEXT,
