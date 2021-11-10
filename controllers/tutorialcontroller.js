@@ -14,6 +14,14 @@ router.get("/", function (req, res) {
     .catch((err) => res.status(500).json({ error: err }));
 });
 
+/***GET: VIEW A TUTORIAL (ALL the USER tutorials in the database)***/
+router.get("/user", validateSession, function (req, res) {
+  const query = { where: { userId: req.user.id } };
+  Tutorial.findAll(query)
+    .then((post) => res.status(200).json(post))
+    .catch((err) => res.status(500).json({ error: err }));
+});
+
 // /***POST: CREATE A TUTORIAL***/
 
 router.post("/create", validateSession, (req, res) => {
