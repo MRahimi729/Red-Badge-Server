@@ -8,7 +8,7 @@ const Comments = db.define("comment", {
   },
   date: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
 });
 

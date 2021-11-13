@@ -15,6 +15,13 @@ const validateSession = require("../middleware/validate-session");
 //     }
 // });
 
+router.get("/:tutorialId", validateSession, function (req, res) {
+  const query = { where: { tutorialId: req.tutorial.id } };
+  Comments.findAll(query)
+    .then((post) => res.status(200).json(post))
+    .catch((err) => res.status(500).json({ error: err }));
+});
+
 // /***POST: CREATE A COMMENT IN A TUTORIAL***/
 
 router.post("/create/:tutorialId", validateSession, (req, res) => {
