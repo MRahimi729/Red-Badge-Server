@@ -1,5 +1,5 @@
 let express = require("express");
-const { Tutorial } = require("../models");
+const { Tutorial, Comments } = require("../models");
 let router = express.Router();
 const validateSession = require("../middleware/validate-session");
 
@@ -9,7 +9,9 @@ const validateSession = require("../middleware/validate-session");
 
 /***GET: VIEW A TUTORIAL (ALL the tutorials in the database) - UPDATE To validatesession***/
 router.get("/", function (req, res) {
-  Tutorial.findAll()
+  Tutorial.findAll({
+    include: Comments,
+  })
     .then((post) => res.status(200).json(post))
     .catch((err) => res.status(500).json({ error: err }));
 });
