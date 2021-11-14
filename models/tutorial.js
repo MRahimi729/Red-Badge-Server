@@ -6,16 +6,12 @@ const Tutorial = db.define("tutorial", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
   date: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
-  photoURL: {
-    type: DataTypes.STRING(1500),
+  photo_url: {
+    type: DataTypes.TEXT,
     allowNull: false,
   },
   description: {
@@ -31,9 +27,9 @@ const Tutorial = db.define("tutorial", {
     allowNull: false,
   },
   directions: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: false,
   },
 });
 
-return Tutorial;
+module.exports = Tutorial;
