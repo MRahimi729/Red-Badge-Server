@@ -10,6 +10,9 @@ const Comments = db.define("comment", {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  userId: {
+    type: DataTypes.INTEGER,
+  },
 });
 
 module.exports = Comments;
