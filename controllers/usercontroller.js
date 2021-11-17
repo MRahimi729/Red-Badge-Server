@@ -85,7 +85,7 @@ router.post("/signin", function (req, res) {
 /***DELETE USER (ADMIN)***/
 router.delete("/delete/:id", validateSession, function (req, res) {
   let query;
-  if (req.user.role == "admin") {
+  if (req.user.role == "Admin") {
     query = { where: { id: req.params.id } };
   } else {
     query = { where: { id: req.params.id, userId: req.user.id } };

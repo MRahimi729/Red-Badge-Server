@@ -63,7 +63,7 @@ router.put("/update/:id", validateSession, function (req, res) {
 /***DELETE: DELETE A TUTORIAL (User-specific or Admin-all)***/
 router.delete("/delete/:id", validateSession, function (req, res) {
   let query;
-  if (req.user.role == "admin") {
+  if (req.user.role == "Admin") {
     query = { where: { id: req.params.id } };
   } else {
     query = { where: { id: req.params.id, userId: req.user.id } };
